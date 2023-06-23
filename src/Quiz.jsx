@@ -17,7 +17,7 @@ const ChoiceResult = ({ selected, correct, children }) => {
   return (
     <div
       className={twMerge(
-        'text-slate-400 border-2 border-slate-400 text-lg font-medium rounded-lg py-2 px-4 flex items-center gap-2 text-left transition duration-300',
+        'text-slate-400 border-2 border-slate-400 text-lg font-medium rounded-lg py-2 px-4 flex items-center text-left transition duration-300',
         correct && 'bg-green-400 border-green-400 text-white',
         selected && !correct && 'bg-red-400 border-red-400 text-white'
       )}
@@ -31,16 +31,26 @@ const ChoiceResult = ({ selected, correct, children }) => {
 
 const getId = (country) => country.name.common
 
-const Quiz = ({ country, choices, onNext }) => {
+const Quiz = ({ quizType, country, choices, onNext }) => {
   const [chosenIndex, chooseIndex] = useState()
   const chosenChoice = chosenIndex !== undefined && choices[chosenIndex]
 
   return (
-    <div className="mt-8">
+    <div>
       <img className="absolute right-0 -top-[4.5rem]" src={adventureImage} />
-      <h2 className="font-bold text-2xl">
-        {country.capital[0]} is the capital of
-      </h2>
+      {quizType === 'capital' && (
+        <h2 className="font-bold text-2xl mt-8">
+          {country.capital[0]} is the capital of
+        </h2>
+      )}
+      {quizType === 'flag' && (
+        <div className="mt-4">
+          <img className="w-20 shadow-xl rounded" src={country.flags.png} />
+          <h2 className="font-bold text-2xl mt-4">
+            Which country does this flag belong to?
+          </h2>
+        </div>
+      )}
       <div className="flex flex-col gap-6 my-8">
         {choices.map((choice, index) => {
           const text = (

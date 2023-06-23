@@ -18,33 +18,37 @@ const shuffle = (array) => {
   }
 }
 
-const getChoices = (list, index) => {
-  const indexs = [...Array(list.length).keys()].filter((i) => i !== index)
+const getChoices = (quizzes, index) => {
+  const indexs = [...Array(quizzes.length).keys()].filter((i) => i !== index)
   shuffle(indexs)
   const result = [index, indexs[0], indexs[1], indexs[2]]
   shuffle(result)
-  return result.map((index) => list[index])
+  return result.map((index) => quizzes[index].country)
 }
 
 export default function App() {
-  const countriesRef = useRef([])
-  const countries = countriesRef.current
+  const quizzesRef = useRef([])
+  const quizzes = quizzesRef.current
   const [quizIndex, setQuizIndex] = useState()
 
   const startGame = () => {
-    shuffle(countriesRef.current)
+    quizzesRef.current = quizzesRef.current.map(({ country }) => ({
+      country,
+      quizType: Math.random() > 0.5 ? 'flag' : 'capital',
+    }))
+    shuffle(quizzesRef.current)
     setQuizIndex(0)
   }
 
   useEffect(() => {
     fetchAllCountries().then((countries) => {
-      countriesRef.current = countries
+      quizzesRef.current = countries.map((country) => ({ country }))
       startGame()
     })
   }, [])
 
   const [lose, setLose] = useState(false)
-  const win = quizIndex === countries.length
+  const win = quizIndex === quizzes.length
 
   return (
     <div
@@ -61,8 +65,9 @@ export default function App() {
         <div className="relative w-full bg-white text-slate-600 p-8 rounded-3xl">
           {!lose && quizIndex !== undefined && (
             <Quiz
-              country={countries[quizIndex]}
-              choices={getChoices(countries, quizIndex)}
+              country={quizzes[quizIndex].country}
+              quizType={quizzes[quizIndex].quizType}
+              choices={getChoices(quizzes, quizIndex)}
               onNext={(result) =>
                 result ? setQuizIndex((i) => i + 1) : setLose(true)
               }
