@@ -7,6 +7,9 @@ export default {
       fontFamily: {
         sans: ['Avenir', ...defaultTheme.fontFamily.sans],
       },
+      borderRadius: {
+        lg: '0.6rem',
+      },
     },
   },
   plugins: [],
